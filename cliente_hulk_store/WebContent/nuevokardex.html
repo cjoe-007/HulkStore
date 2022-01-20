@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<title>Insert title here</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div ng-app="comunicacionApp" ng-controller="comunicacionController"
+		class="container">
+
+		<h1>Kardex</h1>
+		<div class="row">
+
+			<br />
+			<h4>Nota: El botón inicio aparecerá cuando se llene todos los
+				campos correctamente.</h4>
+			<br />
+			<div class="col-sm-6" style="border: solid 1px">
+				<br />
+				<alert-message alert="alertMessage"></alert-message>
+				<br />
+				<div class="form-group">
+					<label>Producto</label> <select ng-model="producto" ng-required="required"
+						ng-init="cargarProductos()" class="form-control"
+						style="width: 80%" ng-change="limpiarDatos()">
+						<option ng-repeat="p in productos" value="{{p.id}}">{{p.nombre}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Detalle</label> <input type="text" min="0"
+						ng-model="detalle" class="form-control" style="width: 80%"
+						value="{{detalle}}" />
+				</div>
+				<div class="form-group">
+					<label>Tipo de kardex</label> <select ng-model="kardex"
+						class="form-control" style="width: 80%" ng-change="cargarKardex()">
+						<option value="Entrada">Entrada</option>
+						<option value="Salida">Salida</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Cantidad</label> <input type="number" min="0"
+						ng-model="cantidad" class="form-control" style="width: 80%"
+						value="{{0}}" ng-blur="showAlertCantidadMaximo()" />
+					<div ng-show="mostrarCantidad">
+						<label>Cantidad máxima de salida es {{stockSalida}}</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label>Precio Unitario</label> <input class="form-control"
+						type="number" min="0" ng-model="precioUnitario"
+						class="form-control" style="width: 80%" value="{{0}}" />
+				</div>
+				<br />
+				<div>
+					<label class="form-control" ng-model="precioTotal">Valor
+						Total: {{cantidad * precioUnitario || 0}}</label>
+				</div>
+				<br /> <br />
+			</div>
+			<!-- div class="col-sm-6" style="border:solid 1px">
+		<div ng-show="mostrarTabla" >
+			<h3>Datos del kardex</h3>
+			<hr>
+			<h4>Producto: {{producto.nombre}}</h4>
+			<h4>Tipo de kardex: {{kardex}}</h4>
+			<h4>cantidad: {{cantidad}}</h4>
+			<h4>Valor unitario: {{precio}}</h4>
+			<h4>Valor Total: {{cantidad * precio || 0}}</h4>
+			
+		</div>
+		</div-->
+		</div>
+		<br />
+
+		<button ng-show="mostrarBotonGuardar" ng-click="guardarKardex()"
+			type="button">Confirmar Kardex</button>
+		<br /> <br /> <br /> <a href="kardexvista.html">Ver Kardex</a> <br />
+		<a href="index.html">Inicio</a>
+	</div>
+	<script>
+		var app = angular.module("comunicacionApp", []);
+		app
+				.controller(
+						"comunicacionController",
+						function($scope, $http) {
+							$scope.productos = [];
+							$scope.ultimoKardex;
+							$scope.kardex;
+							$scope.producto;
+							$scope.cantidad;
+							$scope.precioUnitario;
+							$scope.precioTotal;
+							$scope.mostrarTabla = true;
+							$scope.mostrarCantidad = false;
+							$scope.stockSalida;
+							$scope.mostrarBotonGuardar = false;
+							$scope.detalle;
+
+							$scope.cargarProductos = function() {
+								let url = "http://localhost:9000/productos";
+								$http.get(url).then(function(res) {
+									$scope.productos = res.data;
+								});
+							}
+
+							$scope.limpiarDatos = function() {
+								$scope.kardex = "";
+								$scope.mostrarCantidad = false;
+								$scope.precioUnitario = 0;
+								$scope.precioTotal = 0;
+								$scope.cantidad = 0;
+								$scope.mostrarBotonGuardar = false;
+							}
+
+							$scope.cargarKardex = function() {
+								$scope.precioUnitario = 0;
+								$scope.precioTotal = 0;
+								$scope.cantidad = 0;
+								$scope.mostrarBotonGuardar = false;
+								if ($scope.kardex == "Salida") {
+									let url = "http://localhost:9000/kardex/"
+											+ $scope.producto;
+									$http
+											.get(url)
+											.then(
+													function(res) {
+														$scope.ultimoKardex = res.data;
+														$scope.stockSalida = $scope.ultimoKardex.exiCatidad
+																- $scope.ultimoKardex.stockMinimo;
+														$scope.mostrarCantidad = true;
+													});
+								} else {
+									$scope.mostrarCantidad = false;
+								}
+							}
+							$scope.guardarKardex = function() {
+								let url = "http://localhost:9000/guardarKardex";
+								let ob = new Object();
+								ob.idCatologo = $scope.producto;
+								ob.detalle = $scope.detalle;
+								ob.tipoKardex = $scope.kardex;
+								if ($scope.kardex == "Entrada") {
+									ob.entCatidad = $scope.cantidad;
+									ob.entValorUnitario = $scope.precioUnitario;
+									ob.entValorTotal = $scope.cantidad
+											* $scope.precioUnitario;
+								} else {
+									ob.salCatidad = $scope.cantidad;
+									ob.salValorUnitario = $scope.precioUnitario;
+									ob.salValorTotal = $scope.cantidad
+											* $scope.precioUnitario;
+								}
+
+								var request = $http.post(url, ob);
+								alert('Se guardó correctamente');
+
+								$scope.productos = "";
+								$scope.detalle = "";
+								$scope.limpiarDatos();
+							}
+							$scope.showAlertCantidadMaximo = function() {
+								if ($scope.kardex == "Salida"
+										&& $scope.cantidad > $scope.stockSalida) {
+									alert("La cantidad no debe ser mayor a la cantidad máxima de salida");
+									$scope.mostrarBotonGuardar = false;
+								} else {
+									$scope.mostrarBotonGuardar = true;
+								}
+							};
+						});
+	</script>
+</body>
+</html>

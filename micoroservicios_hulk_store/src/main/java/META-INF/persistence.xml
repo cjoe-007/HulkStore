@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
+	<persistence-unit name="tienda_hulk_store">
+		<class>com.tienda.model.Producto</class>
+		<class>com.tienda.model.Kardex</class>
+		<class>com.tienda.model.Persona</class>
+	</persistence-unit>
+</persistence>
