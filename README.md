@@ -2,7 +2,7 @@
 
 En esta primera versión se tiene el regisrto de un kardex con los eventos de entrda y salida. Consta de 2 partes 
 
-1. cliente_hulk_store = Es el cliente front end desarrollado con angulasjs, bootstrap, bootstrap,jquery.
+1. cliente_hulk_store = Es el cliente front end desarrollado con angulasjs, bootstrap,jquery.
 2. micoroservicios_hulk_store= es la parte back end desarrollado con Java 11, IDE Eclipse, jpa, base de datos en memoria hdbsql, Spring Boot, Servidor tomcat.
 
 Para ejecutar bajar los dos proyectos y tener libre el puerto 9000. 
