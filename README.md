@@ -20,3 +20,5 @@ Empaquetado y ejecución de los microservicios;
  5. Este jar lo podemos ubicar en cualquier carpeta y con una terminal de comando ejecutamos 
           java -jar micoroservicios_hulk_store-0.0.1-SNAPSHOT.jar
  6. Una vez que se encuentre arriba los microservicios nos dirigimos hasta la carpeta del proyecto \cliente_hulk_store\WebContent y damos doble clic en index y se ejecutará el      kardex
+
+Revisar HulkStore.docx se encuentra con imágenes.
